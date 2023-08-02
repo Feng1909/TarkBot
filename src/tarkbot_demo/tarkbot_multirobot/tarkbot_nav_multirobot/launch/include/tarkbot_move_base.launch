@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="namespace" default="robot0"/> 
+    <arg name="scan_topic" default="scan" />
+    <arg name="cmd_vel_topic" default="cmd_vel" />
+    <arg name="odom_topic" default="odom" />  
+	<arg name="map_topic" default="/map" />
+    <arg name="move_forward_only" default="false"/>
+    <arg name="odom_frame_id"   default="$(arg namespace)/odom"/>
+    <arg name="base_frame_id"   default="$(arg namespace)/base_footprint"/>
+    <arg name="sensor_frame_id"   default="$(arg namespace)/laser_link"/>
+	
+	<!-- 读取机器人类型参数 -->
+	<arg name="robot_type" default="r20_mec" doc="robot type [r20_mec, r20_fwd, r20_akm]" />
+
+	<!-- 启动move_base功能包 -->
+		<node ns="$(arg namespace)" pkg="move_base" type="move_base" respawn="true" name="move_base" output="screen" clear_params="true">
+
+			<!-- 全局路径规划器,使用global_planner代替默认的navfn,支持A*和dijkstra算法 -->
+			<param name="base_global_planner" value="global_planner/GlobalPlanner"/>
+			<!-- <param name="base_global_planner" value="global_planner/GlobalPlanner"/> -->
+
+			<!-- 局部路径规划器, 所有机器人默认使用TEB算法，差速机器人可选择DWA算法 -->
+			<param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+			<!-- <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" /> -->
+
+			<!-- 导航通用参数 -->
+			<rosparam file="$(find tarkbot_nav)/config/common/move_base_params.yaml" command="load"  subst_value="True"/> 
+			<rosparam file="$(find tarkbot_nav)/config/common/local_costmap_params.yaml" command="load" subst_value="True"/>
+			<rosparam file="$(find tarkbot_nav)/config/common/global_costmap_params.yaml" command="load" subst_value="True"/>
+			<rosparam file="$(find tarkbot_nav)/config/common/base_global_planner_params.yaml" command="load"  subst_value="True"/>
+
+			<!-- 差异化参数，不同机器人有差别 -->
+			<rosparam file="$(find tarkbot_nav)/config/$(arg robot_type)/costmap_common_params.yaml" command="load" ns="global_costmap"  subst_value="True"/>
+			<rosparam file="$(find tarkbot_nav)/config/$(arg robot_type)/costmap_common_params.yaml" command="load" ns="local_costmap"  subst_value="True"/>
+			<rosparam file="$(find tarkbot_nav)/config/$(arg robot_type)/teb_local_planner_params.yaml" command="load"  subst_value="True"/>
+			<!-- 话题参数添加命名空间 -->
+			<remap from="/scan" to="$(arg scan_topic)"/>s
+			<remap from="/odom" to="$(arg odom_topic)"/>
+			<remap from="map" to="$(arg map_topic)"/>
+
+			<param name="global_costmap/robot_base_frame" value="$(arg base_frame_id)"/>
+			<param name="local_costmap/global_frame" value="$(arg odom_frame_id)"/>
+			<param name="local_costmap/robot_base_frame" value="$(arg base_frame_id)"/>
+			<param name="obstacle_layer/sensor_frame" value="$(arg sensor_frame_id)"/>
+			
+			<!-- 仅twd两轮差速机器人支持DWA算法 -->
+			<!-- <rosparam file="$(find tarkbot_nav)/config/$(arg robot_type)/dwa_local_planner_params.yaml" command="load" /> -->
+		</node>
+
+</launch>
+

@@ -1,0 +1,16 @@
+<launch>
+    <param name="use_sim_time" value="false"/>
+    <arg name="namespace" default="/"/>
+    <!-- 启动手柄遥控节点 -->
+    <group ns="$(arg namespace)">
+    	<node name="joy_node" pkg="joy" type="joy_node" output="screen" respawn="false"/>
+    	<node name="tarkbot_twist_joy" pkg="tarkbot_ctl_multirobot" type="tarkbot_twist_joy.py" output="screen" respawn="false">
+		<param name="x_speed_scale"  value="0.6" />
+		<param name="y_speed_scale"  value="0.6" />
+		<param name="w_speed_scale"  value="3.6" />
+		<remap from="cmd_vel" to="cmd_vel"/>	
+    	</node>
+    </group>
+    <node name="tarkbot_cmd_mux" pkg="tarkbot_ctl_multirobot" type="cmd_mux.py" output="screen" respawn="false"/>
+
+</launch>

@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<launch>
+
+	<arg name="namespace"  default="robot0"/>
+	<arg name="robot_type" default="twd" doc="robot type [mec, fwd, akm, twd, omni]" />
+
+	<!-- 启动底盘及激光雷达驱动包 -->
+	<include file="$(find tarkbot_driver_multirobot)/launch/tarkbot_bringup_multirobot.launch" >
+		<arg name="namespace" value="$(arg namespace)"/>
+	</include>
+	
+	<!-- 启动AMCL 自适应蒙特卡洛定位算法包 -->
+	<include file="$(find tarkbot_nav_multirobot)/launch/include/tarkbot_amcl_base.launch">
+		<arg name="namespace" value="$(arg namespace)"/>
+		<arg name="odom_frame"       value="$(arg namespace)/odom"/>
+		<arg name="base_frame"       value="$(arg namespace)/base_footprint"/>
+		<arg name="global_frame"     value="map"/>
+		<arg name="odom_model_type"  value="diff"/>
+	</include>
+	<!-- 启动路径规划算法包 -->
+	<include file="$(find tarkbot_nav_multirobot)/launch/include/tarkbot_move_base.launch">
+		<arg name="namespace" value="$(arg namespace)"/>
+		<arg name="robot_type"   value="r20_fwd"/> 
+	</include>
+
+</launch>

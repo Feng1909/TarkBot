@@ -1,0 +1,23 @@
+<launch>
+	<!-- 标签定义 -->
+	<arg name="laser_frame"  default="laser_link"/>
+    <arg name="laser_topic"  default="/scan_raw"/>
+
+	<!-- 启动雷达：思岚A1 -->
+    <node name="rplidarNode"          pkg="rplidar_ros"  type="rplidarNode" output="screen">
+        <param name="frame_id"            type="string"  value="laser_link"/>
+        <param name="serial_port"         type="string"  value="/dev/tarkbot_lidar"/>
+        <param name="serial_baudrate"     type="int"     value="115200"/>
+        <param name="inverted"            type="bool"    value="false"/>
+        <param name="angle_compensate"    type="bool"    value="true"/>
+        <param name="scan_mode"           type="string"  value="Boost"/>
+        <param name="cut_angle"           type="bool"    value="true"/>
+        <param name="start_angle"         type="int"     value="130"/>
+        <param name="end_angle"           type="int"     value="230"/>
+
+		<!-- 雷达话题重映射 -->
+		<remap from="/scan" to="$(arg laser_topic)"/>
+    </node>
+
+</launch>
+

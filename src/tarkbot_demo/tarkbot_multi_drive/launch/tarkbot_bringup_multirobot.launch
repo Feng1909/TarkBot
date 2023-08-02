@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<launch>
+
+   <!-- Launch文件参数定义 -->
+    <arg name="base_frame"     default="base_footprint"/>  
+    <arg name="odom_frame"     default="odom"/>  
+    <arg name="imu_frame"      default="imu_link"/>  
+    <arg name="odom_topic"     default="odom_raw"/>  
+    <arg name="imu_topic"      default="imu"/>  
+    <arg name="battery_topic"  default="bat_vol"/>  
+    <arg name="cmd_vel_topic"  default="cmd_vel"/> 
+    <arg name="robot_x"/>
+    <arg name="robot_y"/>
+    <arg name="camera_type"    default="$(optenv CAMERA_TYPE dpcam)"/> 
+    
+
+    
+    <!-- 设置当前机器人命名空间 -->
+    <arg name="namespace" default="robot0"/>
+    <node  pkg="tf" type="static_transform_publisher" name="base_footprint_to_imu_$(arg namespace)" args="0 0 0 0 0 0 $(arg namespace)/base_footprint $(arg namespace)/imu_link 20"/>  
+	<group ns="$(arg namespace)">
+		<!-- 启动机器人底盘驱动节点 -->
+		<node name="tarkbot_robot" pkg="tarkbot_robot" type="tarkbot_robot" output="screen" respawn="false">
+			<!-- robot frame -->
+			<param name="base_frame"        value="$(arg namespace)/$(arg base_frame)"/> 
+			<param name="odom_frame"        value="$(arg namespace)/$(arg odom_frame)"/>     
+			<param name="imu_frame"         value="$(arg namespace)/$(arg imu_frame)"/>     
+
+			<!-- pub topic -->
+			<param name="odom_topic"        value="$(arg odom_topic)"/> 
+			<param name="imu_topic"         value="$(arg imu_topic)"/> 
+			<param name="battery_topic"     value="$(arg battery_topic)"/> 
+
+			<!-- sub topic -->
+			<param name="cmd_vel_topic"     value="$(arg cmd_vel_topic)"/> 
+
+			<!-- config param -->
+			<param name="robot_port"        value="/dev/ttyACM0"/> 
+			<param name="pub_odom_tf"       value="false"/> 
+		        <param name="robot_type_send"  value="r20_fwd"/>
+		</node>
+            <!-- 从机位姿初始化-->
+        <node name="pose_init" pkg="tarkbot_multi_drive" type="init_pose.py" args="0 0 0" output="screen" >
+            <param name='robot_x'    type='double' value='$(arg robot_x)'  />
+            <param name='robot_y'    type='double' value='$(arg robot_y)'  />
+        </node>
+        <!-- 启动robot_pose_ekf节点 -->
+        <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf" output="screen">
+            <param name="output_frame"          value="$(arg namespace)/$(arg odom_frame)"/>
+            <param name="base_footprint_frame"  value="$(arg namespace)/$(arg base_frame)"/>   
+            <param name="freq"                  value="50.0"/>
+            <param name="sensor_timeout"        value="0.5"/>
+            <param name="odom_used"             value="true"/>
+            <param name="imu_used"              value="true"/>
+            <param name="vo_used"               value="false"/>
+            <remap from="odom"                  to="$(arg odom_topic)"/>
+            <remap from="imu_data"              to="$(arg imu_topic)"/>
+        </node>
+        <!-- /odom_combined转换为标准的里程计话题 -->
+        <node pkg="tarkbot_bringup" type="tarkbot_odom_trans.py" name="odom_trans_node" output="screen">
+            <remap from="input"     to="robot_pose_ekf/odom_combined"/>
+            <remap from="output"    to="odom"/>
+        </node>
+        
+        <!-- 跟随控制节点  -->
+	    <node pkg="tarkbot_multi_drive" type="multi_tf_tarnsform" name="multi_tf_tarnsform" output="screen" > <!-- 命名空间robot1代表从机1号 -->
+	      <!-- 参数调节  -->
+		  <param name="k_v" type="double" value="1.5" /> 			<!-- 线速度调节参数 -->  
+		  <param name="k_l" type="double" value="1.0" /> 			<!-- 角速度调节参数 -->  
+		  <param name="k_a" type="double" value="1.0" />			<!-- 角速度调节参数 -->  
+		  <param name="robot_x" type="double" value="$(arg robot_x)" />
+		  <param name="robot_y" type="double" value="$(arg robot_y)" />
+          <param name="follower_to_host" type="string" value="$(arg namespace)" />
+	      <param name="base_to_robot" type="string" value="/$(arg namespace)" /> <!-- 期望跟随坐标的TF坐标名 -->      
+	      <param name="base_frame" type="string" value="base_footprint" />       <!-- 从机的TF坐标名 --> 
+	      <remap from="cmd_vel_ori" to="cmd_vel"/>
+	    </node> 
+
+    </group>
+
+    <!-- 开启雷达节点 -->
+	<include file="$(find tarkbot_driver_multirobot)/launch/tarkbot_lidar.launch">
+        <arg name="lidar_type"    value="$(env LIDAR_TYPE)"/>  
+		<arg name="namespace" value="$(arg namespace)"/>
+	</include>
+
+</launch>

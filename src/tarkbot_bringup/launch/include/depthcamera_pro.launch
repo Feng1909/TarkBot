@@ -1,0 +1,7 @@
+
+<launch>
+
+    <!-- 启动RGBD深度相机，包含RGB相机和深度相机 -->
+	<include file="$(find astra_camera)/launch/tarkbot_astra_pro.launch" />
+
+</launch>

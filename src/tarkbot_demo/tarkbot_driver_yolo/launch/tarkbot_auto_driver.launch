@@ -1,0 +1,105 @@
+<launch>
+
+	<!-- 标签 -->
+	<arg name="camera_type"        default="$(optenv CAMERA_TYPE dpcam_pro)"/>
+  <arg name="robot_type"     default="r20_fwd"/>
+	
+  <include file="$(find tarkbot_yolov5)/launch/yolov5_distinguish.launch"/>
+
+	<group if="$(eval robot_type == 'r20_mec')">		
+    <!-- 启动mec 深度相机 -->	
+    <group if="$(eval camera_type == 'dpcam_pro')">		
+      <node name='driver_way_node' pkg="tarkbot_driver_yolo" type="mec_driver_way.py" output="screen">
+        <param name="outer_ring_center_target" value="0.18" type="double" />        <!-- mec pro -->
+        <param name="outer_ring_vel_z_P" value="0.007" type="double" />      <!-- mec pro -->
+        <param name="outer_ring_vel_z_D" value="0.003" type="double" />
+        <param name="Inner_ring_center_target" value="0.915" type="double" />       <!-- mec pro -->
+        <param name="Inner_ring_vel_y_P" value="0.0005" type="double" />
+        <param name="Inner_ring_vel_y_D" value="0.003" type="double" />
+        <param name="Inner_ring_vel_z_P" value="0.006" type="double" />
+        <param name="Inner_ring_vel_z_D" value="0.001" type="double" />
+      </node>   
+      <node name='tarkbot_auto_run' pkg="tarkbot_driver_yolo" type="mec_tarkbot_auto_run.py" output="screen"/>
+    </group>
+    <!-- 启动mec 普通相机 -->	
+    <group if="$(eval camera_type == 'cam')">		
+      <node name='driver_way_node' pkg="tarkbot_driver_yolo" type="mec_driver_way_camera.py" output="screen">
+        <param name="outer_ring_vel_z_P" value="0.013" type="double" />             <!-- mec cam -->
+        <param name="outer_ring_center_target" value="0.21" type="double" />        <!-- mec cam -->
+        <param name="outer_ring_vel_z_D" value="0.003" type="double" />
+        <param name="Inner_ring_center_target" value="0.915" type="double" />       <!-- mec pro -->
+        <param name="Inner_ring_vel_y_P" value="0.0005" type="double" />
+        <param name="Inner_ring_vel_y_D" value="0.003" type="double" />
+        <param name="Inner_ring_vel_z_P" value="0.006" type="double" />
+        <param name="Inner_ring_vel_z_D" value="0.001" type="double" />
+      </node>   
+      <node name='tarkbot_auto_run' pkg="tarkbot_driver_yolo" type="mec_tarkbot_auto_run_camera.py" output="screen"/>
+    </group>
+
+  </group>
+
+	<group if="$(eval robot_type == 'r20_akm')">		
+    <!-- 启动akm 深度相机 -->		
+    <group if="$(eval camera_type == 'dpcam_pro')">		
+      <node name='driver_way_node' pkg="tarkbot_driver_yolo" type="akm_driver_way.py" output="screen">
+        <param name="outer_ring_center_target" value="0.18" type="double" />        <!-- akm pro -->
+        <param name="outer_ring_vel_z_P" value="0.01" type="double" />        <!-- akm cam -->
+        <param name="outer_ring_vel_z_D" value="0.003" type="double" />
+         <param name="Inner_ring_center_target" value="0.875" type="double" />      <!-- akm pro -->
+        <param name="Inner_ring_vel_y_P" value="0.0005" type="double" />
+        <param name="Inner_ring_vel_y_D" value="0.003" type="double" />
+        <param name="Inner_ring_vel_z_P" value="0.006" type="double" />
+        <param name="Inner_ring_vel_z_D" value="0.001" type="double" />
+      </node>   
+      <node name='tarkbot_auto_run' pkg="tarkbot_driver_yolo" type="akm_tarkbot_auto_run.py" output="screen"/>
+    </group>
+    <!-- 启动akm 普通相机 -->
+    <group if="$(eval camera_type == 'cam')">		
+      <node name='driver_way_node' pkg="tarkbot_driver_yolo" type="akm_driver_way_camera.py" output="screen">
+        <param name="outer_ring_center_target" value="0.15" type="double" />  <!-- akm cam -->
+        <param name="outer_ring_vel_z_P" value="0.01" type="double" />        <!-- akm cam -->
+        <param name="outer_ring_vel_z_D" value="0.003" type="double" />
+        <param name="Inner_ring_center_target" value="0.925" type="double" />    <!-- akm cam -->
+        <param name="Inner_ring_vel_y_P" value="0.0005" type="double" />
+        <param name="Inner_ring_vel_y_D" value="0.003" type="double" />
+        <param name="Inner_ring_vel_z_P" value="0.006" type="double" />
+        <param name="Inner_ring_vel_z_D" value="0.001" type="double" />
+      </node>   
+      <node name='tarkbot_auto_run' pkg="tarkbot_driver_yolo" type="akm_tarkbot_auto_run_camera.py" output="screen"/>
+    </group>
+    
+  </group>
+
+	<group if="$(eval robot_type == 'r20_fwd')">		
+    <!-- 启动mec 深度相机 -->	
+    <group if="$(eval camera_type == 'dpcam_pro')">		
+      <node name='driver_way_node' pkg="tarkbot_driver_yolo" type="fwd_driver_way.py" output="screen">
+        <param name="outer_ring_center_target" value="0.18" type="double" />        <!-- mec pro -->
+        <param name="outer_ring_vel_z_P" value="0.01" type="double" />      <!-- mec pro -->
+        <param name="outer_ring_vel_z_D" value="0.003" type="double" />
+        <param name="Inner_ring_center_target" value="0.915" type="double" />       <!-- mec pro -->
+        <param name="Inner_ring_vel_y_P" value="0.0008" type="double" />
+        <param name="Inner_ring_vel_y_D" value="0.003" type="double" />
+        <param name="Inner_ring_vel_z_P" value="0.006" type="double" />
+        <param name="Inner_ring_vel_z_D" value="0.001" type="double" />
+      </node>   
+      <node name='tarkbot_auto_run' pkg="tarkbot_driver_yolo" type="fwd_tarkbot_auto_run.py" output="screen"/>
+    </group>
+    <!-- 启动mec 普通相机 -->	
+    <group if="$(eval camera_type == 'cam')">		
+      <node name='driver_way_node' pkg="tarkbot_driver_yolo" type="fwd_driver_way_camera.py" output="screen">
+        <param name="outer_ring_vel_z_P" value="0.01" type="double" />             <!-- mec cam -->
+        <param name="outer_ring_center_target" value="0.21" type="double" />        <!-- mec cam -->
+        <param name="outer_ring_vel_z_D" value="0.003" type="double" />
+        <param name="Inner_ring_center_target" value="0.915" type="double" />       <!-- mec pro -->
+        <param name="Inner_ring_vel_y_P" value="0.0005" type="double" />
+        <param name="Inner_ring_vel_y_D" value="0.003" type="double" />
+        <param name="Inner_ring_vel_z_P" value="0.006" type="double" />
+        <param name="Inner_ring_vel_z_D" value="0.001" type="double" />
+      </node>   
+      <node name='tarkbot_auto_run' pkg="tarkbot_driver_yolo" type="fwd_tarkbot_auto_run_camera.py" output="screen"/>
+    </group>
+
+  </group>
+  
+</launch>

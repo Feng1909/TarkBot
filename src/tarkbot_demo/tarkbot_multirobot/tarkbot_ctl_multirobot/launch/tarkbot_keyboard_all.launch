@@ -1,0 +1,9 @@
+<launch>
+    <param name="use_sim_time" value="false"/>
+    <arg name="namespace" default="/"/>
+    <!-- 启动键盘遥控节点 -->
+    <group ns="$(arg namespace)">
+    	<node name="tarkbot_twist_keyboard" pkg="tarkbot_ctl_multirobot" type="tarkbot_twist_keyboard.py" output="screen" respawn="false"/>
+    </group>
+    	<node name="tarkbot_cmd_mux" pkg="tarkbot_ctl_multirobot" type="cmd_mux.py" output="screen" respawn="false"/>
+</launch>

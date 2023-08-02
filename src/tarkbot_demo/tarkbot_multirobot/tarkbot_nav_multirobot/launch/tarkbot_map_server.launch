@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<launch>
+	<arg name="namespace"  default="/"/>
+
+	<group ns="$(arg namespace)">	
+		<arg name="map_file" default="$(find tarkbot_nav_multirobot)/maps/tarkbot_test.yaml"/>
+		<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+	</group>
+	
+</launch>

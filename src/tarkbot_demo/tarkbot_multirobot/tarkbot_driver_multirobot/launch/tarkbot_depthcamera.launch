@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="namespace"  default="robot0"/>   
+    <group ns="$(arg namespace)">
+	        <include file="$(find astra_camera)/launch/tarkbot_astra.launch">
+	    </include>	
+    </group>
+</launch>
+

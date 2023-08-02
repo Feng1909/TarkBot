@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<launch>
+
+   <!-- Launch文件参数定义 -->
+    <arg name="base_frame"     default="base_footprint"/>  
+    <arg name="odom_frame"     default="odom"/>  
+    <arg name="imu_frame"      default="imu_link"/>  
+    <arg name="odom_topic"     default="odom_raw"/>  
+    <arg name="imu_topic"      default="imu"/>  
+    <arg name="battery_topic"  default="bat_vol"/>  
+    <arg name="cmd_vel_topic"  default="cmd_vel"/> 
+    <arg name="camera_type"    default="$(optenv CAMERA_TYPE dpcam)"/> 
+    <!-- 设置当前机器人命名空间 -->
+    <arg name="namespace" default="robot0"/>
+
+	<group ns="$(arg namespace)">
+		<!-- 启动机器人底盘驱动节点 -->
+		<node name="tarkbot_robot" pkg="tarkbot_robot" type="tarkbot_robot" output="screen" respawn="false">
+			<!-- robot frame -->
+			<param name="base_frame"        value="$(arg namespace)/$(arg base_frame)"/> 
+			<param name="odom_frame"        value="$(arg namespace)/$(arg odom_frame)"/>     
+			<param name="imu_frame"         value="$(arg namespace)/$(arg imu_frame)"/>     
+
+			<!-- pub topic -->
+			<param name="odom_topic"        value="$(arg odom_topic)"/> 
+			<param name="imu_topic"         value="$(arg imu_topic)"/> 
+			<param name="battery_topic"     value="$(arg battery_topic)"/> 
+
+			<!-- sub topic -->
+			<param name="cmd_vel_topic"     value="$(arg cmd_vel_topic)"/> 
+
+			<!-- config param -->
+			<param name="robot_port"        value="/dev/ttyAMA0"/> 
+			<param name="pub_odom_tf"       value="false"/> 
+		</node>
+        <node  pkg="tf" type="static_transform_publisher" name="base_footprint_to_imu" args="0 0 0 0 0 0 $(arg namespace)/$(arg base_frame) $(arg namespace)/$(arg imu_frame) 20"/>  
+        <!-- 启动robot_pose_ekf节点 -->
+        <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf" output="screen">
+            <param name="output_frame"          value="$(arg namespace)/$(arg odom_frame)"/>
+            <param name="base_footprint_frame"  value="$(arg namespace)/$(arg base_frame)"/>   
+            <param name="freq"                  value="50.0"/>
+            <param name="sensor_timeout"        value="0.5"/>
+            <param name="odom_used"             value="true"/>
+            <param name="imu_used"              value="true"/>
+            <param name="vo_used"               value="false"/>
+            <remap from="odom"                  to="$(arg odom_topic)"/>
+            <remap from="imu_data"              to="$(arg imu_topic)"/>
+        </node>
+        <!-- /odom_combined转换为标准的里程计话题 -->
+        <node pkg="tarkbot_bringup" type="tarkbot_odom_trans.py" name="odom_trans_node" output="screen">
+            <remap from="input"     to="robot_pose_ekf/odom_combined"/>
+            <remap from="output"    to="odom"/>
+        </node>
+
+        <!-- 使用PRO深度相机 -->
+        <group if="$(eval camera_type == 'dpcam_pro')">
+            <include file="$(find tarkbot_driver_multirobot)/launch/tarkbot_depthcamera_pro.launch"/>   
+        </group>
+
+        <!-- 使用深度相机 -->
+        <group if="$(eval camera_type == 'dpcam')">
+            <include file="$(find tarkbot_driver_multirobot)/launch/tarkbot_depthcamera.launch"/>   
+        </group>
+
+        <!-- 使用普通相机 -->
+        <group if="$(eval camera_type == 'cam')">
+            <include file="$(find tarkbot_driver_multirobot)/launch/tarkbot_camera.launch"/>  
+        </group>
+
+    </group>
+
+    <!-- 开启雷达节点 -->
+	<include file="$(find tarkbot_driver_multirobot)/launch/tarkbot_lidar.launch">
+        <arg name="lidar_type"    value="$(env LIDAR_TYPE)"/>  
+		<arg name="namespace" value="$(arg namespace)"/>
+	</include>
+
+</launch>

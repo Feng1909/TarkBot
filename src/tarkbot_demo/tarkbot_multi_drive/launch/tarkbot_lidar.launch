@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- 标签 -->
+    <arg name="lidar_type"        default="$(optenv LIDAR_TYPE t30)"/>
+    <arg name="laser_frame"  default="laser_link"/>
+    <arg name="laser_topic"  default="scan_raw"/>
+
+    <!-- 设置当前机器人命名空间 -->
+    <arg name="namespace" default="robot0"/>
+    <group ns="$(arg namespace)">
+	     <!-- 启动雷达：思岚A1 -->	
+		<group if="$(eval lidar_type == 'a1')">		
+		    <!-- 启动雷达：思岚A1 -->
+			<node name="rplidarNode" pkg="rplidar_ros"  type="rplidarNode" output="screen">
+				<param name="frame_id"            type="string"  value="$(arg namespace)/$(arg laser_frame)"/>
+				<param name="serial_port"         type="string"  value="/dev/tarkbot_lidar"/>
+				<param name="serial_baudrate"     type="int"     value="115200"/>
+				<param name="inverted"            type="bool"    value="false"/>
+				<param name="angle_compensate"    type="bool"    value="true"/>
+				<param name="scan_mode"           type="string"  value="Boost"/>
+				<param name="cut_angle"           type="bool"    value="true"/>
+                <param name="start_angle"         type="int"     value="130"/>
+                <param name="end_angle"           type="int"     value="230"/>
+                <!-- 雷达话题重映射 -->
+		    	<remap from="scan" to="$(arg laser_topic)"/>
+			</node>
+		</group>
+
+			<!-- 启动雷达：塔克E300 -->	
+		<group if="$(eval lidar_type == 'e300')">	
+			<!-- 启动雷达：塔克E300 -->
+			<node name="xtlidar" pkg="xtlidar_ros" type="xtlidar_ros_node" output="screen" >
+				<param name="type" value="uart" />
+				<param name="port" value="/dev/tarkbot_lidar" />
+				<param name="baud_rate" value="768000" />
+				<param name="max_dist" value="25"/>
+				<rosparam param="rate_list">[768000, 1000000 ]</rosparam>
+				<param name="raw_bytes" value="3"/>
+				<param name="frame_id" value="$(arg namespace)/$(arg laser_frame)" />
+				<param name="output_360" value="true" />
+				<param name="output_scan" value="true" />
+				<param name="output_cloud" value="true"/>
+				<param name="with_angle_filter" value="true"/>
+				<param name="min_angle" value="-2.1"/>
+				<param name="max_angle" value="2.1"/>
+				<param name="hard_resample" value="false"/>
+				<param name="soft_resample" value="false"/>
+				<param name="resample_res" value="0.3"/>
+				<param name="unit_is_mm" value="true"/>
+				<param name="with_confidence" value="true"/>
+				<param name="with_checksum" value="true"/>
+				<param name="inverted" value="false"/>
+				<param name="reversed" value="false"/> 
+				<param name="zero_shift" value="0"/> 
+				<param name="rpm" value="900"/>
+
+				<!-- 雷达话题重新映射 -->
+				<remap from="/scan" to="$(arg laser_topic)"/> 
+
+			</node>
+		</group>
+
+        <!-- 启动雷达：塔克D300 -->	
+	    <group if="$(eval lidar_type == 'd300')">
+			<node name="LD19" pkg="ldlidar_stl_ros" type="ldlidar_stl_ros_node" output="screen" >
+				<param name="product_name" value="LDLiDAR_LD19"/>
+				<param name="topic_name" value="$(arg laser_topic)"/>
+				<param name="port_name" value ="/dev/tarkbot_lidar"/>
+				<param name="frame_id" value="$(arg namespace)/$(arg laser_frame)"/>
+				<!-- 设置激光扫描方向: -->
+				<!--    1. 逆时针设置，例如：<param name=“laser\u scan\u dir”type=“bool”value=“true”/> -->
+				<!--    2. 顺时针设置，例如：<param name=“laser\u scan\u dir”type=“bool”value=“false”/> -->
+				<param name="laser_scan_dir" type="bool" value="true"/>
+				<!-- 角度裁剪设置，设置角度范围内的数据 -->
+				<!--    1. 启用角度裁剪功能: -->
+				<!--       1.1. 启用角度裁剪，例如：<param name=“enable\u angle\u crop\u func”type=“bool”value=“true”/> -->
+				<!--       1.2. 禁用角度裁剪，例如：<param name=“enable\u angle\u crop\u func”type=“bool”value=“false”/> -->
+				<param name="enable_angle_crop_func" type="bool" value="true"/>
+				<!--    2. 角度裁剪间隔设置，设置角度范围内的距离和强度数据将设置为0 -->
+				<!--       角度>=“angle\u crop\u min”和角度<=“angle\u crop\u max”，单位为度 -->
+				<param name="angle_crop_min" type="double" value="130.0"/>
+				<param name="angle_crop_max" type="double" value="230.0"/>
+			</node>
+        </group>
+		
+        <!-- 启动雷达：lbel -->	
+	    <group if="$(eval lidar_type == 'lbel')">
+			<node name="richbeam_lidar" pkg="lakibeam1" type="lakibeam1_scan_node" output="screen">
+				<remap from="/richbeam_lidar/scan" to="/scan" />
+				<param name="frame_id" type="string" value="$(arg namespace)/$(arg laser_frame)"/><!--frame_id设置-->
+				<param name="output_topic" type="string" value="/scan" /><!--topic设置-->
+				<param name="inverted" type="bool" value="false"/><!--配置是否倒装,true倒装-->
+				<param name="hostip" type="string" value="0.0.0.0"/><!--配置本机监听地址，0.0.0.0表示监听全部-->
+				<param name="sensorip" type="string" value="192.168.198.2"/><!--配置sensor地址-->
+				<param name="port" type="string" value="2368"/><!--配置本机监听端口-->
+				<param name="angle_offset" type="int" value="0"/><!--配置点云旋转角度，可以是负数-->
+
+				<param name="scanfreq" type="string" value="30" /><!--配置扫描频率，范围：10、20、25、30-->
+				<param name="filter" type="string" value="3" /><!--配置滤波选项，范围：3、2、1、0 -->
+				<param name="laser_enable" type="string" value="true" /><!--雷达扫描使能，范围：true、false-->
+				<param name="scan_range_start" type="string" value="45" /><!--雷达扫描起始角度，范围：45~315-->
+				<param name="scan_range_stop" type="string" value="315" /><!--雷达扫描结束角度，范围：45~315，结束角度必须大于起始角度-->
+				<remap from="/scan" to="$(arg laser_topic)"/> 
+			</node>
+        </group>
+
+        <node  pkg="tf" type="static_transform_publisher" name="base_foot_print_to_laser" args="0.0 0 0.06 0 0 0 $(arg namespace)/base_footprint $(arg namespace)/laser_link 40"/>
+
+		<!-- 激光雷达滤波器 -->
+		<node pkg="laser_filters" type="scan_to_scan_filter_chain" output="log" name="laser_filter">
+				<rosparam ns="$(arg namespace)" command="load" file="$(find tarkbot_bringup)/config/tarkbot_laserfilter.yaml"/>
+				<remap from="scan" to="$(arg laser_topic)"/>
+				<remap from="scan_filtered" to="scan"/> 
+		</node> 
+
+    </group>
+
+</launch>
+

@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<launch>
+
+	<arg name="namespace"  default="robot0"/>
+	<arg name="robot_type" default="twd" doc="robot type [mec, fwd, akm, twd, omni]" />
+	<arg name="robot_x" value="0"/> 		            <!-- 期望x坐标，主机前方为正方向，单位：m  -->
+	<arg name="robot_y" value="-0.8"/> 		            <!-- 期望y坐标，主机左方为正方向，单位：m  -->
+	<node pkg="tf" type="static_transform_publisher" name="base_to_$(arg namespace)" args="$(arg robot_x) $(arg robot_y) 0 0 0 0   base_footprint $(arg namespace) 100" />
+    <!-- 用于robot_state_publisher节点-->
+    <node pkg="tf" type="static_transform_publisher" name="base_to_link_$(arg namespace)" args="0 0 0 0 0 0 $(arg namespace)/base_footprint $(arg namespace)/base_link 100" />
+
+	<!-- 启动底盘及激光雷达驱动包 -->
+	<include file="$(find tarkbot_multi_drive)/launch/tarkbot_bringup_multirobot.launch" >
+		<arg name="namespace" value="$(arg namespace)"/>
+		<arg name="robot_x" value="$(arg robot_x)"/> 		<!-- 初始位置 x坐标 -->
+		<arg name="robot_y" value="$(arg robot_y)"/> 		<!-- 初始位置 y坐标 -->
+
+	</include>
+	
+	<!-- 启动AMCL 自适应蒙特卡洛定位算法包 -->
+	<include file="$(find tarkbot_multi_drive)/launch/include/tarkbot_amcl_base.launch">
+		<arg name="namespace" value="$(arg namespace)"/>
+		<arg name="odom_frame"       value="$(arg namespace)/odom"/>
+		<arg name="base_frame"       value="$(arg namespace)/base_footprint"/>
+		<arg name="global_frame"     value="map"/>
+		<arg name="odom_model_type"  value="diff"/>
+	</include>
+
+
+</launch>
+
