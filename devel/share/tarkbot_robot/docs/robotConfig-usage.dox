@@ -1,0 +1,12 @@
+\subsubsection usage Usage
+\verbatim
+<node name="tarkbot_robot" pkg="tarkbot_robot" type="tarkbot_robot">
+  <param name="imu_calibrate" type="bool" value="False" />
+  <param name="light_calibrate" type="bool" value="False" />
+  <param name="light_chose" type="int" value="2" />
+  <param name="RGB_R" type="int" value="0" />
+  <param name="RGB_G" type="int" value="255" />
+  <param name="RGB_B" type="int" value="0" />
+</node>
+\endverbatim
+

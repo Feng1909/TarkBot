@@ -1,0 +1,8 @@
+prefix=/home/nuc_1/TarkBot/devel
+
+Name: tarkbot_robot
+Description: Description of tarkbot_robot
+Version: 0.0.0
+Cflags: -I/home/nuc_1/TarkBot/devel/include
+Libs: -L${prefix}/lib 
+Requires: 

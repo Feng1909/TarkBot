@@ -1,0 +1,8 @@
+prefix=/home/nuc_1/TarkBot/devel
+
+Name: exploration_server
+Description: Description of exploration_server
+Version: 0.4.2
+Cflags: -I/home/nuc_1/TarkBot/src/tarkbot_demo/frontier_exploration/exploration_server/include
+Libs: -L${prefix}/lib 
+Requires: actionlib costmap_2d exploration_msgs roscpp tf

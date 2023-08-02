@@ -1,0 +1,40 @@
+file(REMOVE_RECURSE
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/Circle.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/CircleArray.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/CircleArrayStamped.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/Contour.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/ContourArray.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/ContourArrayStamped.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/Face.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/FaceArray.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/FaceArrayStamped.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/FaceRecognitionTrain.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/Flow.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/FlowArray.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/FlowArrayStamped.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/FlowStamped.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/Line.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/LineArray.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/LineArrayStamped.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/Moment.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/MomentArray.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/MomentArrayStamped.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/Point2D.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/Point2DArray.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/Point2DArrayStamped.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/Point2DStamped.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/Rect.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/RectArray.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/RectArrayStamped.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/RotatedRect.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/RotatedRectArray.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/RotatedRectArrayStamped.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/RotatedRectStamped.h"
+  "/home/nuc_1/TarkBot/devel/include/opencv_apps/Size.h"
+  "CMakeFiles/opencv_apps_generate_messages_cpp"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang )
+  include(CMakeFiles/opencv_apps_generate_messages_cpp.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

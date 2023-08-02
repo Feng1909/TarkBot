@@ -1,0 +1,11 @@
+\subsubsection usage Usage
+\verbatim
+<node name="equalize_histogram" pkg="opencv_apps" type="equalize_histogram">
+  <param name="use_camera_info" type="bool" value="False" />
+  <param name="histogram_equalization_type" type="int" value="0" />
+  <param name="clahe_clip_limit" type="double" value="20.0" />
+  <param name="clahe_tile_size_x" type="int" value="32" />
+  <param name="clahe_tile_size_y" type="int" value="32" />
+</node>
+\endverbatim
+

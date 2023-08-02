@@ -1,0 +1,10 @@
+\subsubsection usage Usage
+\verbatim
+<node name="morphology" pkg="opencv_apps" type="morphology">
+  <param name="use_camera_info" type="bool" value="False" />
+  <param name="morph_operator" type="int" value="1" />
+  <param name="morph_element" type="int" value="0" />
+  <param name="morph_size" type="int" value="0" />
+</node>
+\endverbatim
+

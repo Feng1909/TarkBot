@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG  -rdynamic CMakeFiles/astra_usb_reset.dir/src/usb_reset.c.o  -o /home/nuc_1/TarkBot/devel/lib/astra_camera/astra_usb_reset   -L/home/nuc_1/TarkBot/src/tarkbot_package/tarkbot_camera/ros_astra_camera/include/openni2_redist/x64 
