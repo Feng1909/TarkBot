@@ -1,1 +1,0 @@
-/usr/bin/c++ -fPIC -O3 -DNDEBUG  -shared -Wl,-soname,libexample_plugin.so -o /home/nuc_1/TarkBot/devel/lib/libexample_plugin.so CMakeFiles/example_plugin.dir/src/example_plugin.cpp.o 

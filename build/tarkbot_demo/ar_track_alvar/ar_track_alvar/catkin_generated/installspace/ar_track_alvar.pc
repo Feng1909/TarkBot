@@ -1,8 +1,0 @@
-prefix=/home/nuc_1/TarkBot/install
-
-Name: ar_track_alvar
-Description: Description of ar_track_alvar
-Version: 0.7.1
-Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib -lar_track_alvar
-Requires: ar_track_alvar_msgs cv_bridge dynamic_reconfigure geometry_msgs image_transport message_runtime pcl_conversions pcl_ros resource_retriever roscpp sensor_msgs std_msgs tf tf2 visualization_msgs

@@ -1,8 +1,0 @@
-prefix=/home/nuc_1/TarkBot/devel
-
-Name: exploration_msgs
-Description: Description of exploration_msgs
-Version: 0.4.2
-Cflags: -I/home/nuc_1/TarkBot/devel/include
-Libs: -L${prefix}/lib 
-Requires: actionlib_msgs geometry_msgs message_runtime

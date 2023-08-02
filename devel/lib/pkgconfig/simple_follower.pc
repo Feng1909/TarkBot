@@ -1,8 +1,0 @@
-prefix=/home/nuc_1/TarkBot/devel
-
-Name: simple_follower
-Description: Description of simple_follower
-Version: 0.0.0
-Cflags: -I/home/nuc_1/TarkBot/devel/include
-Libs: -L${prefix}/lib 
-Requires: dynamic_reconfigure geometry_msgs message_generation roscpp rospy std_msgs message_runtime

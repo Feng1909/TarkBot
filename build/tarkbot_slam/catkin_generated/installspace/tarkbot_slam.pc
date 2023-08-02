@@ -1,8 +1,0 @@
-prefix=/home/nuc_1/TarkBot/install
-
-Name: tarkbot_slam
-Description: Description of tarkbot_slam
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

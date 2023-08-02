@@ -1,8 +1,0 @@
-prefix=/home/nuc_1/TarkBot/devel
-
-Name: xtlidar_ros
-Description: Description of xtlidar_ros
-Version: 1.0.0
-Cflags: -I/home/nuc_1/TarkBot/devel/include
-Libs: -L${prefix}/lib 
-Requires: message_runtime
